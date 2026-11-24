@@ -1,0 +1,21 @@
+{
+    "package_name": "Vocal Trim",
+    "id": "com.fedetrillo.vocaltrim",
+    "title": "Vocal Trim",
+    "name": "Vocal Trim",
+    "version": "1.0.0",
+    "manufacturer": "Fede Trillo",
+    "contact": "fedetrillo@gmail.com",
+    "description": ["Reads a vocal track's level and writes Trim automation that evens out phrases, keeps natural phrase ends and tames loud consonants, like an engineer riding the fader."],
+    "categories": ["Mixing & Mastering", "Workflow"],
+    "icon": "icon.png",
+    "sdk_version": "3.1.2",
+    "min_luna_version": "3.1.2",
+    "engines": ["luna"],
+    "html": "index.html",
+    "target": "window",
+    "floating": true,
+    "show_with_session": true,
+    "width": 960,
+    "height": 720
+}

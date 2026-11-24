@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Vocal Trim</title>
+  <style>
+    :root, [data-theme="dark"] {
+      --plate: #141619; --panel: #1d2024; --panel2: #24282d; --well: #101215; --edge: #2c3036;
+      --text: #f1f0ec; --dim: #858a93; --silk: #b9bdc5; --grid: #1f2328; --bar: #2f343b;
+      --ok: #3ddc84; --bad: #ff5a6a; color-scheme: dark;
+    }
+    [data-theme="grey"] {
+      --plate: #4a4e55; --panel: #555a62; --panel2: #5d626a; --well: #41454b; --edge: #6a6f78;
+      --text: #f6f5f1; --dim: #c9ccd1; --silk: #e1e3e6; --grid: #484c53; --bar: #5a5f67;
+      --ok: #7ef0ae; --bad: #ff9aa3;
+    }
+    [data-color="yellow"] { --acc: #ffd23f; --acc2: #f5a623; --ink: #1f1600; }
+    [data-color="orange"] { --acc: #ffa94d; --acc2: #ff6b3d; --ink: #1f0c00; }
+    [data-color="red"]    { --acc: #ff6b6b; --acc2: #e0334f; --ink: #1f0508; }
+    [data-color="green"]  { --acc: #2ee6a6; --acc2: #9be14a; --ink: #0b1a10; }
+    [data-color="blue"]   { --acc: #4cc3ff; --acc2: #5b6cff; --ink: #06131f; }
+    [data-color="pink"]   { --acc: #ff86c8; --acc2: #ff4f8b; --ink: #1f0612; }
+    [data-color="purple"] { --acc: #c08bff; --acc2: #7b5cff; --ink: #12081f; }
+    [data-theme="grey"][data-color="yellow"] { --acc: #ffdc66; --acc2: #ffb648; }
+    [data-theme="grey"][data-color="orange"] { --acc: #ffbd73; --acc2: #ff8a63; }
+    [data-theme="grey"][data-color="red"]    { --acc: #ff8f8f; --acc2: #ff5c74; }
+    [data-theme="grey"][data-color="green"]  { --acc: #5ff0bd; --acc2: #b8ee7a; }
+    [data-theme="grey"][data-color="blue"]   { --acc: #7fd4ff; --acc2: #8f9bff; }
+    [data-theme="grey"][data-color="pink"]   { --acc: #ffa6d6; --acc2: #ff79a8; }
+    [data-theme="grey"][data-color="purple"] { --acc: #d4adff; --acc2: #a08bff; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { background: var(--plate); color: var(--text); font: 12.5px/1.35 ui-rounded, "SF Pro Rounded", system-ui, sans-serif; display: flex; flex-direction: column; user-select: none; -webkit-font-smoothing: antialiased; overflow: hidden; }
+    button, select, input { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+    svg { display: block; }
+    .top { display: flex; align-items: center; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--edge); }
+    h1 { flex: 1; white-space: nowrap; margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -.01em; }
+    h1 small { font-weight: 600; color: var(--dim); font-size: 10.5px; margin-left: 4px; font-variant-numeric: tabular-nums; cursor: default; }
+    .theme { display: flex; background: var(--well); border: 1px solid var(--edge); border-radius: 9px; padding: 2px; }
+    .theme button { width: 26px; height: 22px; border: 0; border-radius: 7px; background: none; display: grid; place-items: center; padding: 0; color: var(--dim); }
+    .theme button.on { background: var(--panel2); color: var(--text); }
+    .theme svg { width: 12px; height: 12px; }
+    select { background: var(--well); border: 1px solid var(--edge); border-radius: 8px; padding: 4px 7px; font-size: 12px; font-weight: 700; }
+    .colors { position: relative; }
+    #colorBtn { width: 30px; height: 28px; border-radius: 9px; border: 1px solid var(--edge); background: var(--well); display: grid; place-items: center; padding: 0; }
+    #colorBtn i, .sw { width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg, var(--acc), var(--acc2)); display: block; box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
+    #colorBtn.open { border-color: var(--acc); }
+    .menu { position: absolute; z-index: 30; top: calc(100% + 6px); right: 0; width: 150px; padding: 5px; background: var(--panel2); border: 1px solid var(--edge); border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,.5); display: flex; flex-direction: column; }
+    .menu[hidden] { display: none; }
+    .menu button { display: flex; align-items: center; gap: 9px; border: 0; background: none; padding: 5px 8px; border-radius: 7px; font-weight: 700; font-size: 12px; text-align: left; }
+    .menu button:hover { background: var(--well); }
+    .menu button span { flex: 1; }
+    .menu button svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; visibility: hidden; }
+    .menu button.on svg { visibility: visible; }
+
+
+    main { flex: 1; min-height: 0; padding: 10px 12px; display: grid; grid-template-columns: 300px 1fr; grid-template-rows: auto 1fr; gap: 10px; }
+    .target { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; background: var(--panel); border-radius: 14px; padding: 8px 12px; flex-wrap: wrap; }
+    .target .ic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--well); color: var(--dim); flex: none; }
+    .target.has .ic { background: linear-gradient(135deg, var(--acc), var(--acc2)); color: var(--ink); }
+    .target .ic svg { width: 17px; height: 17px; }
+    .target b { font-size: 13.5px; font-weight: 800; }
+    .target .sub { color: var(--dim); font-size: 11.5px; }
+    .target.has .sub { color: var(--silk); }
+    .target .sp { flex: 1; }
+    .target .opt { display: flex; align-items: center; gap: 6px; }
+    .target .seg button { flex: none; padding: 4px 10px; }
+    .target .opt label { color: var(--dim); font-size: 10.5px; font-weight: 800; }
+    .card { background: var(--panel); border-radius: 16px; padding: 10px 12px; min-height: 0; }
+    #params { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; overflow-x: hidden; }
+    .prow { display: flex; flex-direction: column; gap: 5px; }
+    .prow > label { color: var(--dim); font-size: 10.5px; font-weight: 800; display: flex; justify-content: space-between; }
+    .seg { display: flex; background: var(--well); border: 1px solid var(--edge); border-radius: 9px; padding: 2px; gap: 2px; min-width: 0; }
+    .seg button { flex: 1; border: 0; background: none; border-radius: 7px; padding: 4px 6px; font-size: 11.5px; font-weight: 700; color: var(--dim); white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .seg button:hover { color: var(--text); }
+    .seg button.on { background: var(--panel2); color: var(--text); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acc) 55%, transparent); }
+    .knobrow { display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 8px; justify-items: center; align-items: start; }
+    .knob { display: flex; flex-direction: column; align-items: center; width: 62px; }
+    .knob .kl { font-size: 10.5px; font-weight: 800; color: var(--dim); white-space: nowrap; }
+    .knob svg { width: 46px; height: 46px; cursor: ns-resize; touch-action: none; margin: 2px 0; }
+    .knob .ktrack { fill: none; stroke: var(--well); stroke-width: 4.5; stroke-linecap: round; }
+    .knob .kval { fill: none; stroke: url(#kgrad); stroke-width: 4.5; stroke-linecap: round; }
+    .knob .kptr { stroke: var(--text); stroke-width: 2.2; stroke-linecap: round; }
+    .knob .kv { font-size: 11.5px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .knob.auto .kv { color: var(--acc); }
+    .knob .ab { border: 1px solid var(--edge); background: var(--well); border-radius: 6px; font-size: 9.5px; font-weight: 800; padding: 1px 6px; margin-top: 3px; color: var(--dim); }
+    .knob .ab.on { background: linear-gradient(135deg, var(--acc), var(--acc2)); color: var(--ink); border-color: transparent; }
+    .hint { color: var(--dim); font-size: 11px; line-height: 1.4; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .stat { background: var(--well); border-radius: 9px; padding: 6px 8px; }
+    .stat b { display: block; font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .stat span { color: var(--dim); font-size: 10.5px; font-weight: 700; }
+    .stat.big b { color: var(--acc); }
+    #preview { display: flex; flex-direction: column; gap: 6px; }
+    .ph { display: flex; align-items: center; gap: 12px; font-size: 10.5px; font-weight: 800; color: var(--dim); }
+    .ph span { flex: 1; }
+    .ph em { font-style: normal; display: inline-flex; align-items: center; gap: 5px; }
+    .ph i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; }
+    .ph .k1 i { background: var(--dim); } .ph .k2 i { background: linear-gradient(90deg, var(--acc), var(--acc2)); } .ph .k3 i { background: #4cc3ff; }
+    #roll { flex: 1; min-height: 0; width: 100%; background: var(--well); border-radius: 10px; }
+    #roll .gl { stroke: var(--grid); stroke-width: 1; }
+    #roll .bl { stroke: var(--bar); stroke-width: 1.2; }
+    #roll .lbl { fill: var(--dim); font-size: 9.5px; font-weight: 700; }
+    #roll .before { fill: color-mix(in srgb, var(--dim) 35%, transparent); stroke: none; }
+    #roll .after { fill: none; stroke: url(#ngrad); stroke-width: 1.6; }
+    #roll .tgt { stroke: var(--acc); stroke-width: 1; stroke-dasharray: 5 4; opacity: .8; }
+    #roll .thr { stroke: var(--bad); stroke-width: 1; stroke-dasharray: 2 4; opacity: .6; }
+    #roll .gain { fill: none; stroke: #4cc3ff; stroke-width: 1.8; }
+    #roll .gfill { fill: color-mix(in srgb, #4cc3ff 16%, transparent); }
+    #roll .zero { stroke: var(--edge); stroke-width: 1; }
+    #roll .act { fill: color-mix(in srgb, var(--acc) 8%, transparent); }
+    #roll .empty { fill: var(--dim); font-size: 13px; font-weight: 700; text-anchor: middle; }
+    .actions { display: flex; gap: 8px; padding: 0 12px 10px; }
+    .actions button { height: 40px; border-radius: 12px; border: 1px solid var(--edge); background: var(--panel); font-weight: 800; font-size: 13px; padding: 0 16px; }
+    .actions button:hover:not(:disabled) { border-color: var(--silk); }
+    .actions .main { flex: 1; background: linear-gradient(90deg, var(--acc), var(--acc2)); border: 0; color: var(--ink); font-size: 14px; }
+    button:disabled { opacity: .35; cursor: default; }
+    .foot { padding: 7px 12px; border-top: 1px solid var(--edge); min-height: 31px; }
+    .status { font-size: 12px; color: var(--dim); text-align: center; }
+    .status.ok { color: var(--ok); } .status.bad { color: var(--bad); }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="kgrad" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="var(--acc)"/><stop offset="1" stop-color="var(--acc2)"/></linearGradient><linearGradient id="ngrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--acc)"/><stop offset="1" stop-color="var(--acc2)"/></linearGradient></defs></svg>
+  <div class="top">
+    <h1>Vocal Trim <small id="ver"></small></h1>
+    <div class="colors">
+      <button id="colorBtn" aria-haspopup="true"><i></i></button>
+      <div class="menu" id="colorMenu" hidden></div>
+    </div>
+    <div class="theme">
+      <button data-t="dark" id="tDark"><svg viewBox="0 0 16 16"><path d="M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7z" fill="currentColor"/></svg></button>
+      <button data-t="grey" id="tGrey"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg></button>
+    </div>
+    <select id="lang"></select>
+  </div>
+  <main>
+    <section class="target" id="target">
+      <span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="7" y="2.5" width="6" height="10" rx="3"/><path d="M4.5 9.5a5.5 5.5 0 0 0 11 0M10 15v2.5"/></svg></span>
+      <span><b id="tMain"></b><div class="sub" id="tSub"></div></span>
+      <span class="sp"></span>
+      <span class="opt"><label id="spanLbl"></label><div class="seg" id="span"></div></span>
+      <span class="opt"><label id="laneLbl"></label><div class="seg" id="lane"></div></span>
+    </section>
+    <section class="card" id="params"></section>
+    <section class="card" id="preview">
+      <div class="ph"><span id="pTitle"></span><em class="k1"><i></i><b id="lBefore"></b></em><em class="k2"><i></i><b id="lAfter"></b></em><em class="k3"><i></i><b id="lGain"></b></em></div>
+      <svg id="roll" preserveAspectRatio="none"></svg>
+    </section>
+  </main>
+  <div class="actions">
+    <button id="clear"></button>
+    <button id="undo" disabled></button>
+    <button id="write" class="main" disabled></button>
+  </div>
+  <div class="foot"><div class="status" id="status" role="status"></div></div>
+  <script src="vendor/luna.global.js"></script>
+  <script src="analysis.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

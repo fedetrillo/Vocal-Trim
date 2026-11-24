@@ -1,0 +1,10 @@
+{
+  "name": "vocaltrim",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Vocal Trim, a LUNA Add On by Fede Trillo",
+  "scripts": { "serve": "ua-builder serve", "pack": "ua-builder pack" },
+  "author": "Fede Trillo <fedetrillo@gmail.com>",
+  "license": "SEE LICENSE IN LICENSE"
+}
