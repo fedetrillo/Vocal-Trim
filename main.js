@@ -5,7 +5,7 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const R = window.Rider;
-  const VERSION = '1.0.0';
+  const VERSION = '1.0.1';
   const KEY = 'com.fedetrillo.vocaltrim.';
   const store = {
     get: (k) => { try { return JSON.parse(localStorage.getItem(KEY + k)); } catch { return null; } },
@@ -52,6 +52,10 @@
   if (!I18N[lang]) lang = 'en';
   const t = (k, v = {}) => String(I18N[lang][k] ?? I18N.en[k] ?? k).replace(/\{(\w+)\}/g, (m, x) => (x in v ? String(v[x]) : m));
   const COLORS = ['yellow', 'orange', 'red', 'green', 'blue', 'pink', 'purple'];
+
+  // The guide: its texts, in every language.
+  for (const [c, v] of Object.entries({"en": {"help": "Quick guide", "helpBtn": "Guide", "tNext": "Next", "tBack": "Back", "tSkip": "Skip", "tDone": "Got it", "langT": "Choose your language", "langX": "The guide and the whole window will use it. You can change it later here, at the top right.", "zt": "Always at hand", "z": "Open this guide again whenever you need it with the Guide button.", "q1t": "Your vocal track", "q1": "Select the vocal track in LUNA. Choose where it works (the whole track or a selection) and the lane it writes to.", "q2t": "How it rides", "q2": "Target and threshold by hand or Auto, how far it may move, how much and how fast. It keeps natural phrase ends and tames loud consonants.", "q3t": "Before and after", "q3": "The level as it is, as it will be, and the Trim curve it is going to write.", "q4t": "Write it", "q4": "Write automation puts the curve on the track’s input Trim, so your fader stays free. Clear in range removes it; Undo takes it back."}, "es": {"help": "Guía rápida", "helpBtn": "Guía", "tNext": "Siguiente", "tBack": "Atrás", "tSkip": "Saltar", "tDone": "Entendido", "langT": "Elige tu idioma", "langX": "La guía y toda la ventana lo usarán. Puedes cambiarlo luego aquí, arriba a la derecha.", "zt": "Siempre a mano", "z": "Vuelve a esta guía cuando la necesites con el botón Guía.", "q1t": "Tu pista de voz", "q1": "Selecciona la pista de voz en LUNA. Elige dónde trabaja (la pista entera o una selección) y en qué carril escribe.", "q2t": "Cómo la nivela", "q2": "Objetivo y umbral a mano o en Auto, cuánto puede moverse, cuánto y a qué velocidad. Respeta los finales de frase y suaviza las consonantes fuertes.", "q3t": "Antes y después", "q3": "El nivel como está, como quedará y la curva de Trim que va a escribir.", "q4t": "Escríbela", "q4": "Escribir automatización pone la curva en el Trim de entrada de la pista, así tu fader queda libre. Borrar en el rango la quita; Deshacer la revierte."}, "ca": {"help": "Guia ràpida", "helpBtn": "Guia", "tNext": "Següent", "tBack": "Enrere", "tSkip": "Saltar", "tDone": "Entesos", "langT": "Tria el teu idioma", "langX": "La guia i tota la finestra el faran servir. El pots canviar després aquí, a dalt a la dreta.", "zt": "Sempre a mà", "z": "Torna a aquesta guia quan la necessitis amb el botó Guia.", "q1t": "La teva pista de veu", "q1": "Selecciona la pista de veu a LUNA. Tria on treballa (la pista sencera o una selecció) i en quin carril escriu.", "q2t": "Com l’anivella", "q2": "Objectiu i llindar a mà o en Auto, quant es pot moure, quant i a quina velocitat. Respecta els finals de frase i suavitza les consonants fortes.", "q3t": "Abans i després", "q3": "El nivell com és, com quedarà i la corba de Trim que escriurà.", "q4t": "Escriu-la", "q4": "Escriure l’automatització posa la corba al Trim d’entrada de la pista, així el fader queda lliure. Esborrar al rang la treu; Desfer la reverteix."}, "fr": {"help": "Guide rapide", "helpBtn": "Guide", "tNext": "Suivant", "tBack": "Retour", "tSkip": "Passer", "tDone": "Compris", "langT": "Choisissez votre langue", "langX": "Le guide et toute la fenêtre l’utiliseront. Vous pourrez la changer ici, en haut à droite.", "zt": "Toujours à portée", "z": "Rouvrez ce guide quand vous voulez avec le bouton Guide.", "q1t": "Votre piste de voix", "q1": "Sélectionnez la piste de voix dans LUNA. Choisissez où il agit (toute la piste ou une sélection) et la ligne où il écrit.", "q2t": "Comment il la nivelle", "q2": "Cible et seuil à la main ou en Auto, jusqu’où il peut bouger, combien et à quelle vitesse. Il respecte les fins de phrase et adoucit les consonnes fortes.", "q3t": "Avant et après", "q3": "Le niveau tel qu’il est, tel qu’il sera, et la courbe de Trim qu’il va écrire.", "q4t": "Écrivez-la", "q4": "Écrire l’automation pose la courbe sur le Trim d’entrée de la piste, votre fader reste libre. Effacer dans la zone la retire ; Annuler revient en arrière."}, "de": {"help": "Kurzanleitung", "helpBtn": "Anleitung", "tNext": "Weiter", "tBack": "Zurück", "tSkip": "Überspringen", "tDone": "Verstanden", "langT": "Wähle deine Sprache", "langX": "Die Anleitung und das ganze Fenster verwenden sie. Du kannst sie später hier oben rechts ändern.", "zt": "Immer zur Hand", "z": "Öffne diese Anleitung jederzeit wieder mit dem Button Anleitung.", "q1t": "Deine Gesangsspur", "q1": "Wähle in LUNA die Gesangsspur. Leg fest, wo es arbeitet (ganze Spur oder Auswahl) und in welche Lane es schreibt.", "q2t": "Wie es ausgleicht", "q2": "Ziel und Schwelle von Hand oder Auto, wie weit es sich bewegen darf, wie stark und wie schnell. Phrasenenden bleiben natürlich, laute Konsonanten werden gezähmt.", "q3t": "Vorher und nachher", "q3": "Der Pegel, wie er ist, wie er wird, und die Trim-Kurve, die geschrieben wird.", "q4t": "Schreiben", "q4": "Automation schreiben legt die Kurve auf den Eingangs-Trim der Spur, dein Fader bleibt frei. Im Bereich löschen entfernt sie; Rückgängig nimmt sie zurück."}, "it": {"help": "Guida rapida", "helpBtn": "Guida", "tNext": "Avanti", "tBack": "Indietro", "tSkip": "Salta", "tDone": "Capito", "langT": "Scegli la tua lingua", "langX": "La guida e tutta la finestra la useranno. Puoi cambiarla poi qui, in alto a destra.", "zt": "Sempre a portata di mano", "z": "Riapri questa guida quando ti serve con il pulsante Guida.", "q1t": "La tua traccia voce", "q1": "Seleziona la traccia voce in LUNA. Scegli dove lavora (tutta la traccia o una selezione) e su quale corsia scrive.", "q2t": "Come la livella", "q2": "Obiettivo e soglia a mano o in Auto, quanto può muoversi, quanto e con che velocità. Rispetta i finali di frase e ammorbidisce le consonanti forti.", "q3t": "Prima e dopo", "q3": "Il livello com’è, come sarà e la curva di Trim che scriverà.", "q4t": "Scrivila", "q4": "Scrivi automazione mette la curva sul Trim d’ingresso della traccia, così il fader resta libero. Cancella nell’intervallo la toglie; Annulla torna indietro."}, "pt": {"help": "Guia rápido", "helpBtn": "Guia", "tNext": "Seguinte", "tBack": "Voltar", "tSkip": "Saltar", "tDone": "Percebi", "langT": "Escolhe o teu idioma", "langX": "O guia e toda a janela vão usá-lo. Podes mudá-lo depois aqui, em cima à direita.", "zt": "Sempre à mão", "z": "Volta a este guia quando precisares com o botão Guia.", "q1t": "A tua faixa de voz", "q1": "Seleciona a faixa de voz no LUNA. Escolhe onde trabalha (a faixa toda ou uma seleção) e em que pista escreve.", "q2t": "Como a nivela", "q2": "Alvo e limiar à mão ou em Auto, quanto se pode mexer, quanto e a que velocidade. Respeita os finais de frase e suaviza as consoantes fortes.", "q3t": "Antes e depois", "q3": "O nível como está, como vai ficar e a curva de Trim que vai escrever.", "q4t": "Escreve-a", "q4": "Escrever automação põe a curva no Trim de entrada da faixa, assim o fader fica livre. Apagar no intervalo retira-a; Desfazer reverte."}})) Object.assign(I18N[c], v);
+  let tour = null;
   let theme = store.get('theme') === 'grey' ? 'grey' : 'dark';
   let color = COLORS.includes(store.get('color')) ? store.get('color') : 'red';
   let statusTimer;
@@ -155,6 +159,7 @@
   const closeColors = () => { $('colorMenu').hidden = true; $('colorBtn').classList.remove('open'); };
   function paintStatic() {
     document.documentElement.lang = lang;
+    $('help').title = t('help'); $('help').setAttribute('aria-label', t('help')); { const q = document.createElement('b'); q.textContent = '?'; const sp = document.createElement('span'); sp.textContent = t('helpBtn'); $('help').replaceChildren(q, sp); }
     document.documentElement.dataset.theme = theme;
     document.documentElement.dataset.color = color;
     $('ver').textContent = `v${VERSION}`;
@@ -443,5 +448,23 @@
     await luna.sessions.ready();
     luna.sessions.focused.onChange(() => void build());
     await build();
+    tour ??= window.AddOnTour?.attach({
+      button: $('help'), key: `${KEY}tourSeen`,
+      labels: () => ({ next: t('tNext'), back: t('tBack'), skip: t('tSkip'), done: t('tDone') }),
+      language: {
+        sel: '#lang',
+        list: () => Object.keys(I18N).map((c) => [c, I18N[c]._name]),
+        current: () => lang,
+        set: (c) => { $('lang').value = c; $('lang').dispatchEvent(new Event('change')); },
+        title: () => t('langT'), text: () => t('langX'),
+      },
+      steps: () => [
+        { sel: '#target', title: () => t('q1t'), text: () => t('q1') },
+        { sel: '#params', title: () => t('q2t'), text: () => t('q2') },
+        { sel: '#preview', title: () => t('q3t'), text: () => t('q3') },
+        { sel: '.actions', title: () => t('q4t'), text: () => t('q4') },
+        { sel: '#help', title: () => t('zt'), text: () => t('z') },
+      ],
+    });
   })();
 })();

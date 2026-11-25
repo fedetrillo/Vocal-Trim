@@ -3,15 +3,20 @@
     "id": "com.fedetrillo.vocaltrim",
     "title": "Vocal Trim",
     "name": "Vocal Trim",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "manufacturer": "Fede Trillo",
     "contact": "fedetrillo@gmail.com",
-    "description": ["Reads a vocal track's level and writes Trim automation that evens out phrases, keeps natural phrase ends and tames loud consonants, like an engineer riding the fader."],
-    "categories": ["Mixing & Mastering", "Workflow"],
+    "description": "Vocal riding without drawing a single point. Vocal Trim reads your vocal and writes Trim automation that evens out the phrases, keeps natural endings and tames loud consonants, like an engineer on the fader. See it before and after, then write it in one click. Getting-started guide, 7 languages.",
+    "categories": [
+        "Mixing & Mastering",
+        "Workflow"
+    ],
     "icon": "icon.png",
     "sdk_version": "3.1.2",
     "min_luna_version": "3.1.2",
-    "engines": ["luna"],
+    "engines": [
+        "luna"
+    ],
     "html": "index.html",
     "target": "window",
     "floating": true,

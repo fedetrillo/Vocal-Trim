@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 — 2026-11-25
+
+- A short getting-started guide: the first time it opens it asks for your language, then walks
+  you through the window in it. The **Guide** button brings it back.
+
 ## 1.0.0 — 2026-11-24
 
 - First release: reads a vocal track's level from LUNA's waveform overview and writes the gain

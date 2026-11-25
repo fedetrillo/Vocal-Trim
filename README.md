@@ -38,6 +38,9 @@ track's **Trim** lane, so the fader stays free for the mix. It can also write th
 
 Tip: ±6 to ±9 dB of range is usually enough for a vocal.
 
+The first time it opens, it asks for your language and then a short guide walks you through the
+window in it; the **Guide** button brings it back whenever you need it.
+
 ## Support
 
 If something does not work as expected, Alt-click the version number at the top of the window:
