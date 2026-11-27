@@ -3,7 +3,7 @@
     "id": "com.fedetrillo.vocaltrim",
     "title": "Vocal Trim",
     "name": "Vocal Trim",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "manufacturer": "Fede Trillo",
     "contact": "fedetrillo@gmail.com",
     "description": "Vocal riding without drawing a single point. Vocal Trim reads your vocal and writes Trim automation that evens out the phrases, keeps natural endings and tames loud consonants, like an engineer on the fader. See it before and after, then write it in one click. Getting-started guide, 7 languages.",

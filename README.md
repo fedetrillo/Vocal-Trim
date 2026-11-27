@@ -1,9 +1,8 @@
 # Vocal Trim for LUNA
 
-Vocal Trim reads the level of a vocal track in LUNA and writes the gain changes that keep it
-near a target level, the way an engineer rides the fader. It writes them as automation on the
-track's **Trim** lane, so the fader stays free for the mix. It can also write them on the
-**Volume** lane.
+Vocal riding without drawing a single point. Vocal Trim reads your vocal and writes Trim
+automation that evens out the phrases, keeps natural endings and tames loud consonants, like an
+engineer on the fader. See it before and after, then write it in one click.
 
 <p>
   <img src="docs/screenshot-dark.png" alt="Vocal Trim, dark theme" width="460">

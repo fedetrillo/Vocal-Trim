@@ -5,7 +5,7 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const R = window.Rider;
-  const VERSION = '1.0.1';
+  const VERSION = '1.0.2';
   const KEY = 'com.fedetrillo.vocaltrim.';
   const store = {
     get: (k) => { try { return JSON.parse(localStorage.getItem(KEY + k)); } catch { return null; } },
@@ -421,7 +421,7 @@
       }
       const trimMode = tk?.property?.('trim_mode')?.value ?? null;
       const text = JSON.stringify({ version: VERSION, lanes, trimMode, opts, track: tk?.name.value, control: c ? { id: c.id, real: c.real.value, value: c.value.value, taper: c.taper?.value?.name ?? null, maxDb: c.taper?.value?.maxDb ?? null } : null, controls: tk ? (tk.main?.controls?.items ?? []).map((x) => x.id) : [], trackControls: tk ? (tk.controls?.items ?? []).map((x) => x.id) : [], data: data && { S: data.S, E: data.E, n: data.peaks.length, clips: data.clips, nulls: data.peaks.filter((p) => p == null).length }, result: result && { target: result.target, threshold: result.threshold, active: result.active, minG: result.minG, maxG: result.maxG, points: result.points.length }, log }, null, 2);
-      try { await navigator.clipboard.writeText(text); say('report', {}, 'ok', 2500); } catch { /* nothing */ }
+      try { if (await AddOnCopy(text)) say('report', {}, 'ok', 5000); } catch { /* nothing */ }
     };
 
     let gen = 0;
